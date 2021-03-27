@@ -1,0 +1,62 @@
+﻿To create database, tables, load data from blob storage and queries using hive in azure
+
+
+-- Creating database and table
+CREATE DATABASE if not exists covid19_analysis;
+CREATE EXTERNAL TABLE if not exists covid19_analysis.county_wise
+(
+    Country string,
+    Confirmed int,
+    Deaths int,
+    Recovered int,
+      Active int,
+      New_recovered int
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY "," LINES TERMINATED BY '\n'
+STORED AS TEXTFILE LOCATION "wasb:/covid19container@covidstorage19.blob.core.windows.net/country_wise_output" TBLPROPERTIES("skip.header.line.count"="1");
+
+
+--Loading data into Hive tables
+LOAD DATA INPATH "wasb:/covid19container@covidstorage19.blob.core.windows.net/country_wise_output" INTO TABLE covid19_analysis.county_wise;
+
+
+--Finding country with highest confirmed cases
+SELECT Country, Confirmed
+FROM(SELECT *, ROW_NUMBER()OVER(ORDER BY Confirmed DESC) cases
+FROM covid19_analysis.country_wise)X
+WHERE cases = 1
+
+
+--Finding country with lowest confirmed cases
+SELECT Country, Confirmed
+FROM(SELECT *, ROW_NUMBER()OVER(ORDER BY Confirmed ASC) cases
+FROM covid19_analysis.country_wise)X
+WHERE cases = 1
+
+
+--Finding country with highest deaths
+SELECT Country, Deaths
+FROM(SELECT *, DENSE_RANK()OVER(ORDER BY Deaths DESC) deaths
+FROM covid19_analysis.country_wise)X
+WHERE deaths = 1
+
+
+--Finding country with lowest deaths
+SELECT Country, Deaths
+FROM(SELECT *, DENSE_RANK()OVER(ORDER BY Deaths ASC) cases
+FROM covid19_analysis.country_wise)X
+WHERE cases = 1
+
+
+--Finding country with highest recovery
+SELECT Country, Recovered
+FROM(SELECT *, DENSE_RANK()OVER(ORDER BY Recovered ASC) recovery
+FROM covid19_analysis.country_wise)X
+WHERE recovery = 1
+
+
+--Finding country with lowest recovery
+SELECT Country, New_recovered
+FROM(SELECT *, DENSE_RANK()OVER(ORDER BY New_recovered DESC) new_record
+FROM covid19_analysis.country_wise)X
+WHERE new_record = 1

@@ -8,3 +8,5 @@ https://community.cloudera.com/t5/Support-Questions/FAILED-TO-START-HIVE-SERVER2
 https://docs.databricks.com/data/data-sources/azure/azure-storage.html
 https://www.kaggle.com/imdevskp/corona-virus-report?select=worldometer_data.csv
 https://towardsdatascience.com/introduction-to-data-preprocessing-in-machine-learning-a9fa83a5dc9d
+https://docs.databricks.com/data/data-sources/azure/azure-storage.html
+https://www.sqlshack.com/accessing-azure-blob-storage-from-azure-databricks/
